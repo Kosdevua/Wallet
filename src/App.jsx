@@ -1,34 +1,130 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React, { useState } from "react";
+import { useTable } from "react-table";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [entries, setEntries] = useState([]);
+  const [income, setIncome] = useState("");
+  const [expense, setExpense] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Дата",
+        accessor: "date",
+      },
+      {
+        Header: "Категория",
+        accessor: "category",
+      },
+      {
+        Header: "Доход",
+        accessor: "income",
+      },
+      {
+        Header: "Расход",
+        accessor: "expense",
+      },
+    ],
+    []
+  );
+
+  const data = React.useMemo(() => entries, [entries]);
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data });
+
+  const handleAddEntry = () => {
+    setEntries([...entries, { date, category, income, expense }]);
+    setIncome("");
+    setExpense("");
+    setCategory("");
+    setDate("");
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl text-center mb-4">Finance Tracker</h1>
+
+      <div className="mb-4">
+        <input
+          type="date"
+          className="border p-2 mr-2"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <input
+          type="text"
+          className="border p-2 mr-2"
+          placeholder="Категория"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <input
+          type="number"
+          className="border p-2 mr-2"
+          placeholder="Доход"
+          value={income}
+          onChange={(e) => setIncome(e.target.value)}
+        />
+        <input
+          type="number"
+          className="border p-2 mr-2"
+          placeholder="Расход"
+          value={expense}
+          onChange={(e) => setExpense(e.target.value)}
+        />
+        <button onClick={handleAddEntry} className="bg-blue-500 text-white p-2">
+          Добавить
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+      <table
+        {...getTableProps()}
+        className="min-w-full table-auto border-collapse border border-gray-300"
+      >
+        <thead>
+          {headerGroups.map((headerGroup, index) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={index}>
+              {" "}
+              {/* Добавлен ключ для <tr> */}
+              {headerGroup.headers.map((column) => (
+                <th
+                  {...column.getHeaderProps()}
+                  key={column.id} // Ключ для ячейки
+                  className="border p-2 bg-gray-200"
+                >
+                  {column.render("Header")}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, index) => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()} key={index}>
+                {row.cells.map((cell) => {
+                  return (
+                    <td
+                      {...cell.getCellProps()}
+                      className="border p-2"
+                      key={cell.column.id}
+                    >
+                      {cell.render("Cell")}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
