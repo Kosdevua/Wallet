@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import { useTable } from "react-table";
-import { ToastContainer, toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
+const contextClass = {
+  success: "bg-blue-600",
+  error: "bg-red-600",
+  info: "bg-gray-600",
+  warning: "bg-orange-400",
+  default: "bg-indigo-600",
+  dark: "bg-white-600 font-gray-300",
+};
+
 function App() {
   const [entries, setEntries] = useState([]);
-  const [income, setIncome] = useState("");
-  const [expense, setExpense] = useState("");
+  const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
-  // const [toast, setToast] = useState("");
+  const [type, setType] = useState("income");
 
   const columns = React.useMemo(
     () => [
-      {
-        Header: "Дата",
-        accessor: "date",
-      },
-      {
-        Header: "Категория",
-        accessor: "category",
-      },
-      {
-        Header: "Доход",
-        accessor: "income",
-      },
-      {
-        Header: "Расход",
-        accessor: "expense",
-      },
+      { Header: "Дата", accessor: "date" },
+      { Header: "Категория", accessor: "category" },
+      { Header: "Сумма", accessor: "amount" },
+      { Header: "Тип", accessor: "type" },
     ],
     []
   );
@@ -39,96 +35,137 @@ function App() {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
-  // Функція додавання запису з валідацією
   const handleAddEntry = () => {
-    if (!date || !category || (!income && !expense)) {
-      toast.error(
-        "Заповніть всі поля! Доход або расход повинен мати значення."
-      );
+    if (!date || !category || !amount) {
+      toast.error("Заповніть всі поля!");
       return;
     }
 
-    setEntries([...entries, { date, category, income, expense }]);
-    toast.success("Запис успішно додано!");
-    handleClearEntry();
+    setEntries([
+      ...entries,
+      {
+        date,
+        category,
+        amount: `${type === "income" ? "+" : "-"}${amount}`,
+        type,
+      },
+    ]);
+    setAmount("");
+    setCategory("");
+    setDate("");
   };
 
-  // Функція очищення полів вводу
   const handleClearEntry = () => {
-    // if (date || category || income || expense) {
-    //   toast.info("Поля очіщенні");
-    // }
-
-    setIncome("");
-    setExpense("");
+    setAmount("");
     setCategory("");
     setDate("");
   };
 
   return (
-    <div className="container mx-auto p-4">
-      {/* Контейнер для повідомлень */}
-      <ToastContainer bg="red" position="top-left" autoClose={3000} />
-
+    <div className="container mx-auto p-4 max-w-lg">
       <h1 className="text-3xl text-center mb-4">Finance Tracker</h1>
+      {/* <ToastContainer /> */}
+      <ToastContainer
+        toastClassName={(context) =>
+          contextClass[context?.type || "default"] +
+          " relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+        }
+        position="bottom-left"
+        autoClose={3000}
+      />
 
-      <ul className="max-w-60 mb-4 flex flex-col gap-0.5 space-y-2">
-        <li>
-          <input
-            type="date"
-            className="border p-2 w-full outline-none"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </li>
-        <li>
-          <input
-            type="text"
-            className="border p-2 w-full outline-none"
-            placeholder="Категория"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-        </li>
-        <li>
-          <input
-            type="number"
-            className="border p-2 w-full outline-none"
-            placeholder="Доход"
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-          />
-        </li>
-        <li>
-          <input
-            type="number"
-            className="border p-2 w-full outline-none"
-            placeholder="Расход"
-            value={expense}
-            onChange={(e) => setExpense(e.target.value)}
-          />
-        </li>
-        <li>
+      <div className="max-w-80 flex flex-col gap-3">
+        <input
+          type="date"
+          className="border p-2 w-full "
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+
+        <input
+          type="text"
+          className="border p-2 w-full "
+          placeholder="Категория"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+
+        <div className="flex w-full">
+          <button
+            className={`p-2 w-1/2  border ${
+              type === "income"
+                ? "bg-gray-700 text-zinc-200 text-ivory border-none"
+                : "bg-gray-300  text-black border-none"
+            }`}
+            onClick={() => setType("income")}
+          >
+            Доход
+          </button>
+          <button
+            className={`p-2 w-1/2 border ${
+              type === "expense"
+                ? "bg-gray-700 text-indigo-200 border-none  text-zinc-200"
+                : "bg-gray-300 text-black border-none "
+            }`}
+            onClick={() => setType("expense")}
+          >
+            Расход
+          </button>
+        </div>
+
+        {/* <div className="flex ">
+          <button
+            className={` p-2 flex-1 border ${
+              type === "income" ? "bg-gray-700 " : "bg-gray-300 "
+            }`}
+            onClick={() => setType("income")}
+          >
+            Доход
+          </button>
+          <button
+            className={` p-2 flex-1 border ${
+              type === "expense" ? "bg-gray-700   " : "bg-gray-300 "
+            }`}
+            onClick={() => setType("витрати")}
+          >
+            Расход
+          </button>
+        </div> */}
+
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          className="border p-2 w-full  appearance-none"
+          placeholder="Сумма"
+          value={amount}
+          onChange={(e) => {
+            if (e.target.value.match(/^\d*$/)) {
+              setAmount(e.target.value);
+            }
+          }}
+        />
+
+        <div className="button-wrapper ">
           <button
             onClick={handleAddEntry}
-            className="bg-zinc-700 text-white px-6 py-2 w-full rounded"
+            className="w-full bg-gray-700 text-zinc-900 p-2  border-none"
           >
             Добавить
           </button>
-        </li>
-        <li>
+
           <button
             onClick={handleClearEntry}
-            className="bg-rose-700 text-white px-6 py-2 w-full rounded"
+            className="w-full bg-gray-400 text-zinc-800 p-2  border-none "
           >
             Очистить
           </button>
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <table
         {...getTableProps()}
-        className="min-w-full table-auto border-collapse border border-gray-300"
+        className="min-w-full table-auto border-collapse border border-gray-300 mt-4"
       >
         <thead>
           {headerGroups.map((headerGroup, index) => (
@@ -151,15 +188,17 @@ function App() {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell) => (
-                  <td
-                    {...cell.getCellProps()}
-                    className="border p-2"
-                    key={cell.column.id}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
+                {row.cells.map((cell) => {
+                  return (
+                    <td
+                      {...cell.getCellProps()}
+                      className="border p-2"
+                      key={cell.column.id}
+                    >
+                      {cell.render("Cell")}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}

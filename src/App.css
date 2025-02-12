@@ -4,7 +4,7 @@
 
 @import "tailwindcss";
 
-@import "../node_modules/modern-normalize/modern-normalize.css";
+/* @import "../node_modules/modern-normalize//modern-normalize.css";x */
 
 /* normolize css  */
 /* _______________ */
@@ -112,7 +112,7 @@ body {
   font-family: var(--font-family);
   color: var(--main);
   line-height: 125%;
-  font-family: "Gilroy", sans-serif;
+  /* font-family: "Helvetica", serif; */
   background-color: #fbfbfb;
   scroll-behavior: smooth;
 }
@@ -148,14 +148,27 @@ body {
   /* color: rgb(78, 6, 6); */
 }
 
-/* @layer utilities {
+@layer utilities {
   .scroll-snap-none {
     scroll-snap-type: none;
   }
   .scroll-snap-x {
-    scroll-snap-type: x;
+    scroll-snap-type: none;
   }
   .scroll-snap-y {
     scroll-snap-type: y;
   }
-} */
+}
+
+/* вхідні поля */
+
+.text-input {
+  border-radius: 8px;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row;
+
+  gap: 4px;
+}
