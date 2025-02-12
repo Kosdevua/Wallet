@@ -4,15 +4,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
-const contextClass = {
-  success: "bg-blue-600",
-  error: "bg-red-600",
-  info: "bg-gray-600",
-  warning: "bg-orange-400",
-  default: "bg-indigo-600",
-  dark: "bg-white-600 font-gray-300",
-};
-
 function App() {
   const [entries, setEntries] = useState([]);
   const [amount, setAmount] = useState("");
@@ -64,15 +55,7 @@ function App() {
   return (
     <div className="container mx-auto p-4 max-w-lg">
       <h1 className="text-3xl text-center mb-4">Finance Tracker</h1>
-      {/* <ToastContainer /> */}
-      <ToastContainer
-        toastClassName={(context) =>
-          contextClass[context?.type || "default"] +
-          " relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
-        }
-        position="bottom-left"
-        autoClose={3000}
-      />
+      <ToastContainer />
 
       <div className="max-w-80 flex flex-col gap-3">
         <input
