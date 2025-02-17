@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { actions, useTable } from "react-table";
+import { useTable } from "react-table";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -15,6 +15,8 @@ function App() {
   const [type, setType] = useState("income");
   const [filterType, setFilterType] = useState("all");
   const [sortBy, setSortBy] = useState("date");
+
+  const categories = ["Продукти", "Розваги", "Транспорт", "Здоров'я", "Інше"];
 
   useEffect(() => {
     localStorage.setItem("entries", JSON.stringify(entries));
@@ -78,7 +80,7 @@ function App() {
     setCategory(entryToEdit.category);
     setAmount(entryToEdit.amount.replace(/[+-]/, ""));
     setType(entryToEdit.type);
-    setEntries(entries.filter((_, i) => i !== index)); // Видаляємо тільки при збереженні
+    setEntries(entries.filter((_, i) => i !== index));
   };
 
   const handleDelete = (index) => {
@@ -120,13 +122,18 @@ function App() {
           onChange={(e) => setDate(e.target.value)}
         />
 
-        <input
-          type="text"
+        <select
           className="border p-2 w-full rounded-md"
-          placeholder="Категорія"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-        />
+        >
+          <option value="">Оберіть категорію</option>
+          {categories.map((cat, index) => (
+            <option key={index} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
 
         <div className="flex w-full">
           <button
@@ -178,7 +185,7 @@ function App() {
           className="p-2 border rounded-md"
           onChange={(e) => setFilterType(e.target.value)}
         >
-          <option value="all">Всі</option>
+          <option value="all">Тив витрат</option>
           <option value="income">Дохід</option>
           <option value="expense">Витрати</option>
         </select>
@@ -191,46 +198,9 @@ function App() {
           <option value="amount">Сортувати за сумою</option>
         </select>
       </div>
-
-      <table
-        {...getTableProps()}
-        className="min-w-full table-auto border-collapse border border-gray-300 mt-4"
-      >
-        <thead>
-          {headerGroups.map((headerGroup, index) => (
-            <tr {...headerGroup.getHeaderGroupProps()} key={index}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps()}
-                  key={column.id}
-                  className="border p-2 bg-gray-200"
-                >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, index) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell) => (
-                  <td
-                    {...cell.getCellProps()}
-                    className="border p-2 text-right"
-                    key={cell.column.id}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div>
+        <div className="max-w-miş"></div>
+      </div>
     </div>
   );
 }
