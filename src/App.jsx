@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTable } from "react-table";
+import { actions, useTable } from "react-table";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -36,9 +36,33 @@ function App() {
   const columns = React.useMemo(
     () => [
       { Header: "Дата", accessor: "date" },
-      { Header: "Категория", accessor: "category" },
-      { Header: "Сумма", accessor: "amount" },
+      { Header: "Категорія", accessor: "category" },
+      {
+        Header: "Сума",
+        accessor: "amount",
+        Cell: ({ value }) => <div className="text-right">{value}</div>,
+      },
       { Header: "Тип", accessor: "type" },
+      {
+        Header: "Дії",
+        accessor: "actions",
+        Cell: ({ row }) => (
+          <div className="text-center">
+            <button
+              className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+              onClick={() => handleEdit(row.index)}
+            >
+              ✏️
+            </button>
+            <button
+              className="bg-red-500 text-white px-2 py-1 rounded"
+              onClick={() => handleDelete(row.index)}
+            >
+              🗑️
+            </button>
+          </div>
+        ),
+      },
     ],
     []
   );
@@ -48,9 +72,24 @@ function App() {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
+  const handleEdit = (index) => {
+    const entryToEdit = entries[index];
+    setDate(entryToEdit.date);
+    setCategory(entryToEdit.category);
+    setAmount(entryToEdit.amount.replace(/[+-]/, ""));
+    setType(entryToEdit.type);
+    setEntries(entries.filter((_, i) => i !== index)); // Видаляємо тільки при збереженні
+  };
+
+  const handleDelete = (index) => {
+    const updatedEntries = [...entries];
+    updatedEntries.splice(index, 1);
+    setEntries(updatedEntries);
+  };
+
   const handleAddEntry = () => {
     if (!date || !category || !amount) {
-      toast.error("Заполните все поля!");
+      toast.error("Заповніть усі поля!");
       return;
     }
 
@@ -70,7 +109,7 @@ function App() {
 
   return (
     <div className="container mx-auto p-4 max-w-lg">
-      <h1 className="text-3xl text-center mb-4">Finance Tracker</h1>
+      <h1 className="text-3xl text-center mt-18 mb-4">Фінансовий трекер</h1>
       <ToastContainer />
 
       <div className="flex flex-col gap-3">
@@ -84,7 +123,7 @@ function App() {
         <input
           type="text"
           className="border p-2 w-full rounded-md"
-          placeholder="Категория"
+          placeholder="Категорія"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         />
@@ -93,22 +132,22 @@ function App() {
           <button
             className={`p-2 w-1/2 rounded-l border ${
               type === "income"
-                ? "bg-gray-700 text-ivory"
+                ? "bg-gray-700 text-zinc-300 border-0"
                 : "bg-gray-300 text-black"
             }`}
             onClick={() => setType("income")}
           >
-            Доход
+            Дохід
           </button>
           <button
             className={`p-2 w-1/2 rounded-r border ${
               type === "expense"
-                ? "bg-gray-700 text-ivory"
+                ? "bg-gray-700  text-zinc-300 border-0"
                 : "bg-gray-300 text-black"
             }`}
             onClick={() => setType("expense")}
           >
-            Расход
+            Витрати
           </button>
         </div>
 
@@ -117,7 +156,7 @@ function App() {
           inputMode="numeric"
           pattern="[0-9]*"
           className="border p-2 w-full rounded-md appearance-none"
-          placeholder="Сумма"
+          placeholder="Сума"
           value={amount}
           onChange={(e) => {
             if (e.target.value.match(/^\d*$/)) {
@@ -128,9 +167,9 @@ function App() {
 
         <button
           onClick={handleAddEntry}
-          className="w-full bg-gray-700 text-ivory p-2 rounded-md border"
+          className="w-full bg-gray-700 text-zinc-300 p-4  rounded-xs "
         >
-          Добавить
+          Додати
         </button>
       </div>
 
@@ -140,15 +179,15 @@ function App() {
           onChange={(e) => setFilterType(e.target.value)}
         >
           <option value="all">Всі</option>
-          <option value="income">Доход</option>
-          <option value="expense">Росход</option>
+          <option value="income">Дохід</option>
+          <option value="expense">Витрати</option>
         </select>
 
         <select
           className="p-2 border rounded-md"
           onChange={(e) => setSortBy(e.target.value)}
         >
-          <option value="date">Сортувати по даті</option>
+          <option value="date">Сортувати за датою</option>
           <option value="amount">Сортувати за сумою</option>
         </select>
       </div>
@@ -178,17 +217,15 @@ function App() {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td
-                      {...cell.getCellProps()}
-                      className="border p-2"
-                      key={cell.column.id}
-                    >
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
+                {row.cells.map((cell) => (
+                  <td
+                    {...cell.getCellProps()}
+                    className="border p-2 text-right"
+                    key={cell.column.id}
+                  >
+                    {cell.render("Cell")}
+                  </td>
+                ))}
               </tr>
             );
           })}
