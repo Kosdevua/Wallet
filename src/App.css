@@ -172,3 +172,17 @@ body {
 
   gap: 4px;
 }
+input {
+  background-color: rgb(222, 223, 223);
+  /* color: aqua; */
+  outline: none;
+  border: none;
+}
+
+:focus input {
+  background-color: rgb(153, 51, 126);
+}
+
+.column {
+  background-color: rgb(123, 0, 255);
+}
