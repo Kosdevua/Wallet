@@ -1,13 +1,9 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 @import "tailwindcss";
 
-/* @import "../node_modules/modern-normalize//modern-normalize.css";x */
-
-/* normolize css  */
-/* _______________ */
 html {
   scroll-behavior: smooth;
 }
@@ -139,13 +135,6 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: var(--accent);
   border-radius: 30px;
-}
-/* _______________ */
-/* normolize css end */
-
-body {
-  /* background-color: rgb(136, 135, 135); */
-  /* color: rgb(78, 6, 6); */
 }
 
 @layer utilities {
