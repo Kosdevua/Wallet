@@ -1,4 +1,6 @@
 import React from "react";
+import { CiEdit } from "react-icons/ci";
+import { FaTrash } from "react-icons/fa";
 import { useTable } from "react-table";
 
 function EntryTable({ entries, handleEdit, handleDelete }) {
@@ -13,6 +15,7 @@ function EntryTable({ entries, handleEdit, handleDelete }) {
         Cell: ({ value, row }) => (
           <div className="text-right">
             {row.original.type === "income" ? "+" : "-"}
+            {/* {row.original.type} */}
             {value}
           </div>
         ),
@@ -22,18 +25,18 @@ function EntryTable({ entries, handleEdit, handleDelete }) {
         Header: "Дії",
         accessor: "actions",
         Cell: ({ row }) => (
-          <div className="text-center">
+          <div className="text-center flex justify-evenly">
             <button
-              className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+              className="dark:md:hover:bg-yellow-400  bg-yellow-500 text-white px-2 py-1 rounded mr-2"
               onClick={() => handleEdit(row.original.id)}
             >
-              ✏️
+              <CiEdit />
             </button>
             <button
-              className="bg-red-500 text-white px-2 py-1 rounded"
+              className=" dark:md:hover:bg-red-400 transition-colors duration-300 bg-red-500 text-white px-2 py-1 rounded"
               onClick={() => handleDelete(row.original.id)}
             >
-              🗑️
+              <FaTrash />
             </button>
           </div>
         ),

@@ -4,7 +4,7 @@ function Balance({ entries }) {
     0
   );
   return (
-    <div className="text-center text-2xl font-bold mt-4">
+    <div className="text-center text-2xl font-bold mt-4 border-1">
       Баланс: {balance} грн
     </div>
   );

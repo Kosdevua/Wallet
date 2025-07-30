@@ -13,10 +13,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
-  const [type, setType] = useState("income");
   const [filterType, setFilterType] = useState("all");
   const [sortBy, setSortBy] = useState("date");
   const [isEditing, setIsEditing] = useState(false);
@@ -41,10 +37,6 @@ function App() {
   const handleEdit = (id) => {
     const entry = entries.find((e) => e.id === id);
     if (!entry) return;
-    setDate(entry.date);
-    setCategory(entry.category);
-    setAmount(entry.amount.toString());
-    setType(entry.type);
     setIsEditing(true);
     setEditingId(id);
   };
@@ -56,7 +48,9 @@ function App() {
     }
   };
 
-  const handleAddEntry = () => {
+  const handleAddEntry = (values) => {
+    const { date, category, amount, type, description } = values;
+
     if (!date || !category || !amount) {
       toast.error("Заповніть усі поля!");
       return;
@@ -68,6 +62,7 @@ function App() {
       category,
       amount: parseFloat(amount),
       type,
+      description,
     };
 
     const updated = isEditing
@@ -75,9 +70,6 @@ function App() {
       : [...entries, newEntry];
 
     setEntries(updated);
-    setAmount("");
-    setCategory("");
-    setDate("");
     setIsEditing(false);
     setEditingId(null);
 
@@ -92,18 +84,19 @@ function App() {
       <ToastContainer />
 
       <EntryForm
-        {...{
-          amount,
-          setAmount,
-          category,
-          setCategory,
-          date,
-          setDate,
-          type,
-          setType,
-          categories,
-          isEditing,
-          handleAddEntry,
+        isEditing={isEditing}
+        categories={categories}
+        initialValues={{
+          date: "",
+          category: "",
+          type: "expense",
+          amount: "",
+          description: "",
+        }}
+        onSubmit={(values, { resetForm }) => {
+          handleAddEntry(values);
+          ``;
+          resetForm();
         }}
       />
 

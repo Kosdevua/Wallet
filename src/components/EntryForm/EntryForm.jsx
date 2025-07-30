@@ -1,85 +1,129 @@
-function EntryForm({
-  amount,
-  setAmount,
-  category,
-  setCategory,
-  date,
-  setDate,
-  type,
-  setType,
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+export default function EntryForm({
+  onSubmit,
+  initialValues,
   categories,
   isEditing,
-  handleAddEntry,
 }) {
+  const validationSchema = Yup.object({
+    date: Yup.string().required("Оберіть дату"),
+    category: Yup.string().required("Оберіть категорію"),
+    type: Yup.string().oneOf(["income", "expense"]).required("Оберіть тип"),
+    amount: Yup.number().required("Введіть суму").positive("Має бути > 0"),
+    description: Yup.string().max(100, "Не більше 100 символів"),
+  });
+
   return (
-    <div className="flex flex-col gap-3">
-      <input
-        type="date"
-        className="border p-2 w-full rounded-md"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
+      {({ setFieldValue, values }) => (
+        <Form className="flex flex-col gap-3">
+          {/* Дата */}
+          <Field
+            type="date"
+            name="date"
+            className="border p-2 rounded-md w-full"
+          />
+          <ErrorMessage
+            name="date"
+            component="div"
+            className="text-red-500 text-sm"
+          />
 
-      <select
-        className="border p-2 w-full rounded-md"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-      >
-        <option value="">Оберіть категорію</option>
-        {categories.map((cat, index) => (
-          <option key={index} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
+          {/* Категорія */}
+          <Field
+            as="select"
+            name="category"
+            className="border p-2 rounded-md w-full"
+          >
+            <option value="">Оберіть категорію</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </Field>
+          <ErrorMessage
+            name="category"
+            component="div"
+            className="text-red-500 text-sm"
+          />
 
-      <div className="flex w-full">
-        <button
-          className={`p-2 w-1/2 rounded-l border ${
-            type === "expense"
-              ? "bg-gray-700  text-zinc-300 border-0"
-              : "bg-gray-300 text-black"
-          }`}
-          onClick={() => setType("expense")}
-        >
-          Витрати
-        </button>
-        <button
-          className={`p-2 w-1/2 rounded-r border ${
-            type === "income"
-              ? "bg-gray-700 text-zinc-300 border-0"
-              : "bg-gray-300 text-black"
-          }`}
-          onClick={() => setType("income")}
-        >
-          Дохід
-        </button>
-      </div>
+          {/* Тип (дохід / витрати) */}
+          <div className="flex w-full">
+            <button
+              type="button"
+              className={`p-2 w-1/2 rounded-l border ${
+                values.type === "expense"
+                  ? "bg-gray-700  text-zinc-300 border-0"
+                  : "bg-gray-300 text-black"
+              }`}
+              onClick={() => setFieldValue("type", "expense")}
+            >
+              Витрати
+            </button>
+            <button
+              type="button"
+              className={`p-2 w-1/2 rounded-r border ${
+                values.type === "income"
+                  ? "bg-gray-700 text-zinc-300 border-0"
+                  : "bg-gray-300 text-black"
+              }`}
+              onClick={() => setFieldValue("type", "income")}
+            >
+              Дохід
+            </button>
+          </div>
+          <ErrorMessage
+            name="type"
+            component="div"
+            className="text-red-500 text-sm"
+          />
 
-      <input
-        type="text"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        className="border p-2 w-full rounded-md appearance-none"
-        placeholder="Сума"
-        value={amount}
-        onChange={(e) => {
-          if (e.target.value.match(/^\d*$/)) {
-            setAmount(e.target.value);
-          }
-        }}
-      />
+          {/* Сума */}
+          <Field
+            name="amount"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="border p-2 rounded-md appearance-none w-full"
+            placeholder="Сума"
+          />
+          <ErrorMessage
+            name="amount"
+            component="div"
+            className="text-red-500 text-sm"
+          />
 
-      <button
-        onClick={handleAddEntry}
-        className={`w-full ${
-          isEditing ? "bg-green-500" : "bg-gray-700"
-        } text-zinc-300 p-4 rounded-xs`}
-      >
-        {isEditing ? "Оновити" : "Додати"}
-      </button>
-    </div>
+          {/* Опис — нове поле */}
+          <Field
+            name="description"
+            as="textarea"
+            placeholder="Опис (необов’язково)"
+            className="border p-2 rounded-md w-full"
+          />
+          <ErrorMessage
+            name="description"
+            component="div"
+            className="text-red-500 text-sm"
+          />
+
+          {/* Кнопка */}
+          <button
+            type="submit"
+            className={`w-full ${
+              isEditing ? "bg-gray-500" : "bg-gray-700"
+            } text-zinc-300 p-4 rounded-xs`}
+          >
+            {isEditing ? "Оновити" : "Додати"}
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 }
-
-export default EntryForm;
