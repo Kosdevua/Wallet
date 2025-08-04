@@ -6,6 +6,7 @@ import EntryForm from "./components/EntryForm/EntryForm.jsx";
 import Filters from "./components/Filters/Filters.jsx";
 import EntryTable from "./components/EntryTable/EntryTable.jsx";
 import Balance from "./components/Balance/Balance.jsx";
+import DatePickerModal from "./components/ModalDate/ModalDate.jsx";
 
 function App() {
   const [entries, setEntries] = useState(() => {
@@ -82,7 +83,7 @@ function App() {
     <div className="container mx-auto p-4 max-w-lg">
       <h1 className="text-3xl text-center mt-4 mb-6">Фінансовий трекер</h1>
       <ToastContainer />
-
+      <DatePickerModal />
       <EntryForm
         isEditing={isEditing}
         categories={categories}

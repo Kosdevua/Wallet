@@ -116,9 +116,12 @@ export default function EntryForm({
           {/* Кнопка */}
           <button
             type="submit"
+            // className={`w-full ${
+            //   isEditing ? "bg-gray-500" : "bg-gray-700"
+            // } text-zinc-300 p-4 rounded-xs ` }
             className={`w-full ${
               isEditing ? "bg-gray-500" : "bg-gray-700"
-            } text-zinc-300 p-4 rounded-xs`}
+            } text-zinc-300 p-4 rounded-xs `}
           >
             {isEditing ? "Оновити" : "Додати"}
           </button>

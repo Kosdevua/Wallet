@@ -1,10 +1,10 @@
-import React from "react";
+import { useMemo } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaTrash } from "react-icons/fa";
 import { useTable } from "react-table";
 
 function EntryTable({ entries, handleEdit, handleDelete }) {
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       { Header: "№", accessor: (_, index) => index + 1 },
       { Header: "Дата", accessor: "date" },
@@ -27,7 +27,7 @@ function EntryTable({ entries, handleEdit, handleDelete }) {
         Cell: ({ row }) => (
           <div className="text-center flex justify-evenly">
             <button
-              className="dark:md:hover:bg-yellow-400  bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+              className="c.button dark:md:hover:bg-yellow-400  bg-yellow-500 text-white px-2 py-1 rounded mr-2"
               onClick={() => handleEdit(row.original.id)}
             >
               <CiEdit />
@@ -45,7 +45,7 @@ function EntryTable({ entries, handleEdit, handleDelete }) {
     [handleEdit, handleDelete]
   );
 
-  const data = React.useMemo(() => entries, [entries]);
+  const data = useMemo(() => entries, [entries]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
