@@ -7,6 +7,7 @@ import Filters from "./components/Filters/Filters.jsx";
 import EntryTable from "./components/EntryTable/EntryTable.jsx";
 import Balance from "./components/Balance/Balance.jsx";
 import DatePickerModal from "./components/ModalDate/ModalDate.jsx";
+import { confirmToast } from "../src/utils/confirmToast.jsx";
 
 function App() {
   const [entries, setEntries] = useState(() => {
@@ -42,11 +43,22 @@ function App() {
     setEditingId(id);
   };
 
+  // const handleDelete = (id) => {
+  //   if (window.confirm("Ви впевнені, що хочете видалити цей запис?")) {
+  //     setEntries(entries.filter((e) => e.id !== id));
+  //     toast.success("Транзакцію видалено успішно!");
+  //   }
+  // };
+
   const handleDelete = (id) => {
-    if (window.confirm("Ви впевнені, що хочете видалити цей запис?")) {
-      setEntries(entries.filter((e) => e.id !== id));
-      toast.success("Транзакцію видалено успішно!");
-    }
+    confirmToast({
+      message: "Ви впевнені, що хочете видалити цей запис?",
+      confirmText: "Видалити",
+      onConfirm: () => {
+        setEntries((prev) => prev.filter((e) => e.id !== id));
+        toast.success("Транзакцію видалено успішно!");
+      },
+    });
   };
 
   const handleAddEntry = (values) => {
@@ -81,7 +93,7 @@ function App() {
 
   return (
     <div className="container mx-auto p-4 max-w-lg">
-      <h1 className="text-3xl text-center mt-4 mb-6">Фінансовий трекер</h1>
+      <h1 className="text-3xl text-center mt-4 mb-6">Wallet</h1>
       <ToastContainer />
       <DatePickerModal />
       <EntryForm

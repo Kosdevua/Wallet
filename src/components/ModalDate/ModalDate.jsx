@@ -21,11 +21,11 @@ const DatePickerModal = () => {
 
   return (
     <div>
-      <button onClick={openModal}>Открыть календарь</button>
+      <button onClick={openModal}>Open calendar</button>
       <Modal
         isOpen={isOpen}
         onRequestClose={closeModal}
-        contentLabel="Выбор даты"
+        contentLabel="Вибір дати"
       >
         <DatePicker
           selected={selectedDate}
