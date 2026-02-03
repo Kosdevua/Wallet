@@ -20,6 +20,7 @@ export default function EntryForm({
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}
+      enableReinitialize
     >
       {({ setFieldValue, values }) => (
         <Form className="flex flex-col gap-3">

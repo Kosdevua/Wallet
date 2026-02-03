@@ -6,7 +6,7 @@ function Filters({ filterType, setFilterType, sortBy, setSortBy }) {
         value={filterType}
         onChange={(e) => setFilterType(e.target.value)}
       >
-        <option value="all">Тип витрат</option>
+        <option value="all">Всі транзакції</option>
         <option value="expense">Витрати</option>
         <option value="income">Дохід</option>
       </select>

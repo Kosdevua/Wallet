@@ -27,28 +27,25 @@ function App() {
   }, [entries]);
 
   const filtered = entries.filter(
-    (e) => filterType === "all" || e.type === filterType
+    (e) => filterType === "all" || e.type === filterType,
   );
 
   const sorted = [...filtered].sort((a, b) =>
     sortBy === "date"
       ? new Date(a.date) - new Date(b.date)
-      : a.amount - b.amount
+      : a.amount - b.amount,
   );
 
   const handleEdit = (id) => {
     const entry = entries.find((e) => e.id === id);
     if (!entry) return;
-    setIsEditing(true);
     setEditingId(id);
+    setIsEditing(true);
   };
 
-  // const handleDelete = (id) => {
-  //   if (window.confirm("Ви впевнені, що хочете видалити цей запис?")) {
-  //     setEntries(entries.filter((e) => e.id !== id));
-  //     toast.success("Транзакцію видалено успішно!");
-  //   }
-  // };
+  const editingEntry = editingId
+    ? entries.find((e) => e.id === editingId)
+    : null;
 
   const handleDelete = (id) => {
     confirmToast({
@@ -69,13 +66,18 @@ function App() {
       return;
     }
 
+    const now = new Date().toISOString();
+    const existingEntry = isEditing
+      ? entries.find((e) => e.id === editingId)
+      : null;
     const newEntry = {
       id: editingId || Date.now(),
       date,
       category,
       amount: parseFloat(amount),
       type,
-      description,
+      description: description || "",
+      createdAt: existingEntry?.createdAt ?? now,
     };
 
     const updated = isEditing
@@ -87,7 +89,7 @@ function App() {
     setEditingId(null);
 
     toast.success(
-      isEditing ? "Транзакцію оновлено!" : "Транзакцію додано успішно!"
+      isEditing ? "Транзакцію оновлено!" : "Транзакцію додано успішно!",
     );
   };
 
@@ -99,13 +101,23 @@ function App() {
       <EntryForm
         isEditing={isEditing}
         categories={categories}
-        initialValues={{
-          date: "",
-          category: "",
-          type: "expense",
-          amount: "",
-          description: "",
-        }}
+        initialValues={
+          editingEntry
+            ? {
+                date: editingEntry.date,
+                category: editingEntry.category,
+                type: editingEntry.type,
+                amount: String(editingEntry.amount),
+                description: editingEntry.description || "",
+              }
+            : {
+                date: "",
+                category: "",
+                type: "expense",
+                amount: "",
+                description: "",
+              }
+        }
         onSubmit={(values, { resetForm }) => {
           handleAddEntry(values);
           ``;
